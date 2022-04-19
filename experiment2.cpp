@@ -157,13 +157,46 @@ sx ToSxTree(BiTree root){
  	InitSx(r,root,1);
  	return r;
 }
-void SxPreOutput(sx s,int i)
+void SxPreOutput(sx s,int i,void (*Visit)(ElemType e))
 {
-    printf("%d ",s.data[i]);
-    SxPreOutput(s,2*i);
-    SxPreOutput(s,2*i+1);
+    if(i > s.n)
+        return;
+    Visit(s.data[i]);
+    SxPreOutput(s,2*i,Visit);
+    SxPreOutput(s,2*i+1,Visit);
 }
-
+void SxInOutput(sx s,int i,void (*Visit)(ElemType e))
+{
+    if(i > s.n)
+        return;
+    SxInOutput(s,2*i,Visit);
+    Visit(s.data[i]);
+    SxInOutput(s,2*i+1,Visit);
+    
+}
+void SxPostOutput(sx s,int i,void (*Visit)(ElemType e))
+{
+    if(i > s.n)
+        return;
+    SxPostOutput(s,2*i,Visit);
+    SxPostOutput(s,2*i+1,Visit);
+    Visit(s.data[i]);
+}
+typedef struct ExpressionTree
+{
+    bool isOperator;
+    union
+    {
+        int num;
+        char Opr;
+    };
+    ExpressionTreeNode* l;
+    ExpressionTreeNode* r;
+}
+void BuildExpressionTree(const char str[])
+{
+    
+}
 int main()
 {
   BiTree root;
@@ -179,6 +212,9 @@ int main()
   printf("树的高度为%d\n", Depth(root));
   sx p=ToSxTree(root);
   SxLevelOutput(p);
+  SxPreOutput(p,1,printelem);
+  SxInOutput(p,1,printelem);
+  SxPostOutput(p,1,printelem);
   return 0;
 }
 
