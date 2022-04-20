@@ -190,13 +190,104 @@ typedef struct ExpressionTree
         int num;
         char Opr;
     };
-    ExpressionTreeNode* l;
-    ExpressionTreeNode* r;
-}
-void BuildExpressionTree(const char str[])
+    ExpressionTree* l;
+    ExpressionTree* r;
+}* ExNode;
+
+void BuildExpressionTree(struct ExpressionTree * en,const char str[])
 {
+    int j = 0;
+    for(int i = 0; i < strlen(str); i ++){
+        if(str[i] == '(')
+            j ++;
+        else if(str[i] == ')')
+            j --;
+        if(j == 0 && (str[i] == '+' || str[i] == '-')){
+            en->isOperator = 1;
+            en->Opr = str[i];
+            en->l = new ExpressionTree;
+            char* str1 = new char[sizeof(struct ExpressionTree)];
+            strcpy(str1,str);
+            str1[i] = '\0';
+            BuildExpressionTree(en->l,str1);
+            en->r = new ExpressionTree;
+            BuildExpressionTree(en->l,str+i+1);
+            return;
+        }
+    }
+    if(j != 0){
+        printf("ERROR!");
+        exit(0);
+    }
     
+    for(int i = 0; i < strlen(str); i ++){
+        if(str[i] == '(')
+            j ++;
+        else if(str[i] == ')')
+            j --;
+        if(j == 0 && (str[i] == '*' || str[i] == '/')){
+            en->isOperator = 1;
+            en->Opr = str[i];
+            en->l = new ExpressionTree;
+            char* str1 = new char[sizeof(struct ExpressionTree)];
+            strcpy(str1,str);
+            str1[i] = '\0';
+            BuildExpressionTree(en->l,str1);
+            en->r = new ExpressionTree;
+            BuildExpressionTree(en->l,str+i+1);
+            return;
+        }
+    }
+    if(str[0] == '('){
+        char* str1 = new char[sizeof(struct ExpressionTree)];
+        strcpy(str1,str);
+        str1[strlen(str)-1]='\0';
+        str1 ++;
+        BuildExpressionTree(en,str1);
+        return;
+    }
+    else{
+        en->isOperator = 0;
+        en->num = atoi(str);
+        en->l = en->r = NULL;
+    }
 }
+
+void InorderExpressionTree(struct ExpressionTree * en)
+{
+    if(en->isOperator == true)
+    {
+        if((en->Opr=='+'||en->Opr=='-')&&(en->l->isOperator==0||en->r->isOperator==0))
+        
+        InorderExpressionTree(en->l);
+        printf("%d",en->Opr);
+        InorderExpressionTree(en->r);
+        if((en->Opr=='+'||en->Opr=='-')&&(en->l->isOperator==0||en->r->isOperator==0))
+        printf(")");
+    }
+    else
+    printf("%d",en->num);
+}
+
+int CulculateExpressionTree(struct ExpressionTree * en)
+{
+    int result;
+    if(en->isOperator == 1)
+    {
+        if(en->Opr=='+')
+            result=CulculateExpressionTree(en->l)+CulculateExpressionTree(en->r);
+        if(en->Opr=='-')
+            result=CulculateExpressionTree(en->l)-CulculateExpressionTree(en->r);
+        if(en->Opr=='*')
+            result=CulculateExpressionTree(en->l)*CulculateExpressionTree(en->r);
+        if(en->Opr=='/')
+            result=CulculateExpressionTree(en->l)/CulculateExpressionTree(en->r);
+    }
+    else
+        result=en->num;
+        return result;
+}
+#if 0
 int main()
 {
   BiTree root;
@@ -217,5 +308,18 @@ int main()
   SxPostOutput(p,1,printelem);
   return 0;
 }
+#elif 1
 
+int main(){
+    string str;
+    scanf("%s",&str);
+    ExNode en = (ExNode)malloc(sizeof(struct ExpressionTree));
+    BuildExpressionTree(en,str);
+    InorderExpressionTree(en);
+    int result = CulculateExpressionTree(en);
+    printf("%d\n",result);
+    return 0;
+}
+
+#endif
 
