@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <math.h>
+#include <string.h>
 
 using namespace std;
 
@@ -196,6 +197,8 @@ typedef struct ExpressionTree
 
 void BuildExpressionTree(struct ExpressionTree * en,const char str[])
 {
+    if(str[0] == '\0')
+        return;
     int j = 0;
     for(int i = 0; i < strlen(str); i ++){
         if(str[i] == '(')
@@ -258,7 +261,7 @@ void InorderExpressionTree(struct ExpressionTree * en)
     if(en->isOperator == true)
     {
         if((en->Opr=='+'||en->Opr=='-')&&(en->l->isOperator==0||en->r->isOperator==0))
-        
+    
         InorderExpressionTree(en->l);
         printf("%d",en->Opr);
         InorderExpressionTree(en->r);
@@ -269,7 +272,7 @@ void InorderExpressionTree(struct ExpressionTree * en)
     printf("%d",en->num);
 }
 
-int CulculateExpressionTree(struct ExpressionTree * en)
+int CulculateExpressionTree(struct ExpressionTree *en)
 {
     int result;
     if(en->isOperator == 1)
@@ -310,16 +313,16 @@ int main()
 }
 #elif 1
 
-int main(){
+int main()
+{
     string str;
     scanf("%s",&str);
     ExNode en = (ExNode)malloc(sizeof(struct ExpressionTree));
-    BuildExpressionTree(en,str);
+    BuildExpressionTree(en,str.data());
     InorderExpressionTree(en);
     int result = CulculateExpressionTree(en);
     printf("%d\n",result);
     return 0;
 }
-
 #endif
 
