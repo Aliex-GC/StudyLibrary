@@ -197,8 +197,6 @@ typedef struct ExpressionTree
 
 void BuildExpressionTree(struct ExpressionTree * en,const char str[])
 {
-    if(str[0] == '\0')
-        return;
     int j = 0;
     for(int i = 0; i < strlen(str); i ++){
         if(str[i] == '(')
@@ -214,7 +212,7 @@ void BuildExpressionTree(struct ExpressionTree * en,const char str[])
             str1[i] = '\0';
             BuildExpressionTree(en->l,str1);
             en->r = new ExpressionTree;
-            BuildExpressionTree(en->l,str+i+1);
+            BuildExpressionTree(en->r,str1+i+1);
             return;
         }
     }
@@ -260,10 +258,9 @@ void InorderExpressionTree(struct ExpressionTree * en)
 {
     if(en->isOperator == true)
     {
-        if((en->Opr=='+'||en->Opr=='-')&&(en->l->isOperator==0||en->r->isOperator==0))
-    
+        printf("(");
         InorderExpressionTree(en->l);
-        printf("%d",en->Opr);
+        printf("%c",en->Opr);
         InorderExpressionTree(en->r);
         if((en->Opr=='+'||en->Opr=='-')&&(en->l->isOperator==0||en->r->isOperator==0))
         printf(")");
@@ -316,10 +313,10 @@ int main()
 int main()
 {
     string str;
-    scanf("%s",&str);
+    cin >> str;
     ExNode en = (ExNode)malloc(sizeof(struct ExpressionTree));
     BuildExpressionTree(en,str.data());
-    InorderExpressionTree(en);
+    InorderExpressionTree(en);printf("\n");
     int result = CulculateExpressionTree(en);
     printf("%d\n",result);
     return 0;
